@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+/*
+ * NS Digital Solutions design tokens.
+ * Contrast notes (WCAG 2.2):
+ *  - plum on ivory ≈ 12:1, charcoal on ivory ≈ 14:1
+ *  - plum on coral ≈ 4.6:1  → coral buttons use plum text (white on coral fails AA)
+ *  - coral-ink on ivory ≈ 6.3:1, on lavender/mint/coral-soft/ivory-deep ≥ 5:1 → small accent text and links
+ *  - coral-strong on ivory ≈ 3.8:1 → large display text only (≥ 24px)
+ */
+@theme {
+  --color-ivory: #fff9f1;
+  --color-ivory-deep: #f6ecdf;
+  --color-plum: #492653;
+  --color-plum-deep: #351b3d;
+  --color-plum-soft: #6b4775;
+  --color-coral: #ff715b;
+  --color-coral-soft: #ffe1d9;
+  --color-coral-strong: #e14d33;
+  --color-coral-ink: #a8341f;
+  --color-lavender: #e7ddf8;
+  --color-lavender-deep: #cdbcef;
+  --color-mint: #c9f2df;
+  --color-mint-deep: #8fdcb9;
+  --color-sun: #ffd76a;
+  --color-charcoal: #29252d;
+  --color-muted: #5f5866;
+  --color-line: #eadfd2;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.5rem;
+  --shadow-soft: 0 1px 2px rgb(73 38 83 / 0.05), 0 8px 24px -12px rgb(73 38 83 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(73 38 83 / 0.06), 0 22px 44px -18px rgb(73 38 83 / 0.32);
+  --ease-studio: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 10s ease-in-out infinite;
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-rise: rise 0.9s var(--ease-studio) both;
+
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -10px, 0); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translate3d(0, 24px, 0); }
+    to { opacity: 1; transform: none; }
+  }
+  /* Transform-only entrance for the LCP headline: it is painted immediately, never hidden at opacity 0. */
+  --animate-slide-up: slide-up 1s var(--ease-studio) both;
+  @keyframes slide-up {
+    from { transform: translate3d(0, 28px, 0); }
+    to { transform: none; }
+  }
+  --animate-draw: draw 1.2s var(--ease-studio) 0.6s both;
+  @keyframes draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-ivory font-sans text-charcoal antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-plum;
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    @apply bg-coral text-plum-deep;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-coral-strong);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-sun);
+  }
+  summary {
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer utilities {
+  /* Subtle editorial grid used behind heroes and illustrations. */
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, rgb(73 38 83 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(73 38 83 / 0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .grid-lines-dark {
+    background-image:
+      linear-gradient(to right, rgb(255 249 241 / 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 249 241 / 0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .mask-fade {
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 75%);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Long-form article typography. */
+.prose-ns {
+  @apply text-[1.0625rem] leading-8 text-charcoal;
+}
+.prose-ns > * + * {
+  @apply mt-6;
+}
+.prose-ns h2 {
+  @apply mt-14 text-2xl font-bold sm:text-3xl;
+}
+.prose-ns h3 {
+  @apply mt-10 text-xl font-semibold;
+}
+.prose-ns ul {
+  @apply list-disc space-y-2 pl-6 marker:text-coral-strong;
+}
+.prose-ns ol {
+  @apply list-decimal space-y-2 pl-6 marker:font-semibold marker:text-plum;
+}
+.prose-ns a {
+  @apply font-medium text-coral-ink underline decoration-coral/50 underline-offset-4 hover:decoration-coral-ink;
+}
+.prose-ns blockquote {
+  @apply rounded-2xl border-l-4 border-coral bg-white px-6 py-5 font-display text-lg text-plum;
+}
+.prose-ns strong {
+  @apply font-semibold text-plum;
+}
+
+/* Reduced motion: stop decorative loops and smooth scrolling. Motion components also honour this via MotionConfig. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
