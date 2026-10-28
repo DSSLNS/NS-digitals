@@ -8,6 +8,10 @@ import { serviceLabel, type ServiceSlug } from "./services";
  * Replace them with verified client projects (with written permission) as they become available,
  * and set `kind: "client"`.
  *
+ * Live demos: each concept has a working demo website (source in demos/sites/<id>, deployed as its own
+ * Vercel project). `liveDemo` is the single source of truth for its URL; set `status: "live"` only after the
+ * deployed URL has been verified. Cards and case studies read it from here.
+ *
  * Screens are captured from the coded mockups in `src/components/mockups` with `npm run mockups:capture`
  * and stored in `public/images/work/<slug>/<view>.jpg`. Views starting with "mobile" are phone screens.
  */
@@ -40,6 +44,9 @@ export type ProjectFeature =
   | { type: "seo-process"; title: string; intro: string; steps: { title: string; body: string }[]; vitals: { metric: string; good: string; meaning: string }[]; snippet: string }
   | { type: "maintenance"; title: string; intro: string; cadence: { period: string; tasks: string[] }[]; log: { date: string; type: string; entry: string }[] };
 
+/** A demo is "live" only once its public URL has been deployed and verified. */
+export type LiveDemo = { status: "live"; url: string } | { status: "in-progress" };
+
 export type Project = {
   slug: string;
   kind: "concept" | "client";
@@ -67,6 +74,7 @@ export type Project = {
   /** Verified, client-approved results only. Always empty for concept projects. */
   results: string[];
   tone: ProjectTone;
+  liveDemo: LiveDemo;
   cover: ProjectScreen;
   mobile: ProjectScreen;
   feature: ProjectFeature;
@@ -114,6 +122,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows how we plan a store around buying decisions: product information placed where questions arise, a short checkout, and a test plan that covers the scenarios that lose orders.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "coral",
     cover: { view: "home", alt: "Atelier concept store homepage with a seasonal campaign banner and new-arrival product cards" },
     mobile: { view: "mobile-product", alt: "Atelier product page on a phone with photo gallery, size selector and add-to-bag button" },
@@ -170,6 +179,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows how we design around photography and real shopping behaviour, and how a flexible CMS lets a small team keep an image-led site fresh.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "sun",
     cover: { view: "home", alt: "Oakhaven homepage with a full-width living room photograph and shop-by-room navigation" },
     mobile: { view: "mobile-home", alt: "Oakhaven homepage on a phone with room photography and collection links" },
@@ -231,6 +241,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows how we build product-led SaaS sites that explain clearly, convert on pricing and stay stable as releases ship every week.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "lavender",
     cover: { view: "home", alt: "Ledgerly homepage with a product dashboard screenshot, headline and start-free-trial button" },
     mobile: { view: "mobile-home", alt: "Ledgerly homepage on a phone with headline, trial button and dashboard preview" },
@@ -288,6 +299,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows how we approach a redesign: structure and accessibility first, visual polish second, and a migration plan that protects what already works.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "mint",
     cover: { view: "home", alt: "Redesigned Harbour Clinic homepage with clear navigation, a book-appointment button and a photo of a physiotherapy session" },
     mobile: { view: "mobile-home", alt: "Redesigned Harbour Clinic homepage on a phone with book-appointment and call buttons" },
@@ -347,6 +359,7 @@ export const projects: Project[] = [
     outcome:
       "The case study shows our bug-fixing process: reproduce, find the root cause, fix safely, verify and prevent the same problem from coming back.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "coral",
     cover: { view: "home", alt: "Saffron Table restaurant homepage with a food photograph, opening hours and a reserve-a-table button" },
     mobile: { view: "mobile-booking", alt: "Saffron Table reservation form on a phone with date, time and party size fields" },
@@ -403,6 +416,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows our QA workflow end to end: a plan based on risk, broad coverage, clear defect reports and automation that protects every release.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "lavender",
     cover: { view: "home", alt: "Brightpath Academy homepage with course categories, a featured course and a start-learning button" },
     mobile: { view: "mobile-course", alt: "Brightpath Academy lesson page on a phone with a video player and course progress" },
@@ -472,6 +486,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows our SEO and performance process: audit, fix at the template level, validate and keep measuring. We report scores only from real test runs.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "mint",
     cover: { view: "home", alt: "Wayfarer Journeys homepage with a mountain lake photograph, tour search and featured small-group tours" },
     mobile: { view: "mobile-home", alt: "Wayfarer Journeys homepage on a phone with destination search and a featured tour" },
@@ -541,6 +556,7 @@ export const projects: Project[] = [
     outcome:
       "The concept shows how we keep a business-critical website dependable: scheduled care, early warnings and testing that makes every update safe.",
     results: [],
+    liveDemo: { status: "in-progress" },
     tone: "ivory",
     cover: { view: "home", alt: "Northfield Advisory homepage with a meeting photograph, advisory services and a book-a-consultation button" },
     mobile: { view: "mobile-home", alt: "Northfield Advisory homepage on a phone with services list and consultation button" },
@@ -571,7 +587,7 @@ export const projectsForService = (slug: ServiceSlug) =>
   projects.filter((p) => p.services.includes(slug)).sort((a, b) => Number(b.primaryService === slug) - Number(a.primaryService === slug));
 
 /** The lightweight, serialisable shape used by project cards (including the client-side portfolio filter). */
-export type ProjectCardData = Pick<Project, "slug" | "kind" | "name" | "title" | "domain" | "industry" | "primaryService" | "summary" | "tone" | "cover"> & {
+export type ProjectCardData = Pick<Project, "slug" | "kind" | "name" | "title" | "domain" | "industry" | "primaryService" | "summary" | "tone" | "cover" | "liveDemo"> & {
   services: { slug: ServiceSlug; label: string }[];
 };
 
@@ -586,8 +602,12 @@ export const toProjectCard = (p: Project): ProjectCardData => ({
   summary: p.summary,
   tone: p.tone,
   cover: p.cover,
+  liveDemo: p.liveDemo,
   services: p.services.map((s) => ({ slug: s, label: serviceLabel(s) })),
 });
+
+/** The verified live demo URL, or undefined while the demo is not yet live. */
+export const liveDemoUrl = (p: Pick<Project, "liveDemo">) => (p.liveDemo.status === "live" ? p.liveDemo.url : undefined);
 
 /** Public path of a captured screen. */
 export const screenSrc = (slug: string, view: string) => `/images/work/${slug}/${view}.jpg`;

@@ -1,0 +1,12 @@
+{
+  "name": "ns-demos",
+  "private": true,
+  "description": "Live demo websites for the NS Digital Solutions concept case studies. Each site in sites/* is an independent, statically exported Next.js app.",
+  "workspaces": ["shared", "sites/*"],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "verify": "node scripts/verify-site.mjs"
+  },
+  "engines": { "node": ">=20.9" }
+}

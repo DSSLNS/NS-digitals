@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, Info } from "lucide-react";
-import { getProject, projects, toProjectCard } from "@/content/projects";
+import { getProject, liveDemoUrl, projects, toProjectCard } from "@/content/projects";
 import { getService, serviceLabel } from "@/content/services";
 import { buildMetadata } from "@/lib/seo";
 import { projectToneSurface } from "@/lib/tones";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { ServiceCard } from "@/components/cards";
 import { FeatureBlock } from "@/components/case-study/feature-block";
 import { Reveal } from "@/components/motion/reveal";
+import { LiveDemoLink } from "@/components/portfolio/live-demo-link";
 import { ConceptBadge, ProjectCard } from "@/components/portfolio/project-card";
 import { BrowserFrame, PhoneFrame } from "@/components/portfolio/screen-frame";
 import { CtaBand } from "@/components/sections/cta-band";
@@ -71,6 +72,7 @@ export default async function CaseStudyPage({ params }: Props) {
     .map(({ p }) => toProjectCard(p));
   const relatedServices = project.services.map((s) => getService(s)).filter((s) => s !== undefined);
   const tone = projectToneSurface[project.tone];
+  const demoUrl = liveDemoUrl(project);
 
   return (
     <>
@@ -84,11 +86,15 @@ export default async function CaseStudyPage({ params }: Props) {
         lead={project.summary}
         actions={
           <>
-            <ButtonLink href={`/request-a-quote?service=${project.primaryService}`} size="lg">
+            {demoUrl ? (
+              <LiveDemoLink demo={project.liveDemo} name={project.name} variant="button" />
+            ) : (
+              <ButtonLink href="#challenge" size="lg" arrow={false}>
+                Read the case study
+              </ButtonLink>
+            )}
+            <ButtonLink href={`/request-a-quote?service=${project.primaryService}`} variant="outline" size="lg">
               Discuss a similar project
-            </ButtonLink>
-            <ButtonLink href="#challenge" variant="outline" size="lg" arrow={false}>
-              Read the case study
             </ButtonLink>
           </>
         }
@@ -96,9 +102,19 @@ export default async function CaseStudyPage({ params }: Props) {
 
       {/* Showcase */}
       <Container>
+        <Link href="/work" className="mb-6 inline-flex items-center gap-1.5 rounded font-semibold text-plum hover:text-coral-ink">
+          <ArrowLeft aria-hidden="true" className="size-4" /> Back to all projects
+        </Link>
         <div className={cn("relative overflow-hidden rounded-[2rem] px-4 pt-4 sm:px-10 sm:pt-10 lg:px-14 lg:pt-14", tone)}>
           <div className="flex items-end gap-6 lg:gap-10">
-            <BrowserFrame slug={project.slug} view={project.cover.view} domain={project.domain} alt={project.cover.alt} sizes="(min-width: 1280px) 960px, 90vw" priority className="min-w-0 flex-1 rounded-b-none" />
+            {demoUrl ? (
+              <a href={demoUrl} target="_blank" rel="noopener noreferrer" className="group block min-w-0 flex-1 rounded-t-xl">
+                <span className="sr-only">Open the {project.name} live demo (opens in a new tab)</span>
+                <BrowserFrame slug={project.slug} view={project.cover.view} domain={new URL(demoUrl).host} alt={project.cover.alt} sizes="(min-width: 1280px) 960px, 90vw" priority zoom className="rounded-b-none" />
+              </a>
+            ) : (
+              <BrowserFrame slug={project.slug} view={project.cover.view} domain={project.domain} alt={project.cover.alt} sizes="(min-width: 1280px) 960px, 90vw" priority className="min-w-0 flex-1 rounded-b-none" />
+            )}
             <PhoneFrame slug={project.slug} view={project.mobile.view} alt={project.mobile.alt} sizes="220px" className="mb-6 hidden w-[22%] max-w-[15rem] shrink-0 sm:block lg:mb-10" />
           </div>
         </div>
@@ -129,6 +145,11 @@ export default async function CaseStudyPage({ params }: Props) {
             <dd className="mt-1">{isConcept ? <ConceptBadge /> : <span className="font-medium text-plum">Client project</span>}</dd>
           </div>
         </dl>
+        {demoUrl && (
+          <p className="mt-4 text-sm text-muted">
+            Live demo: <span className="font-medium text-plum">{new URL(demoUrl).host}</span>. It opens in a new tab and runs as its own website.
+          </p>
+        )}
         {isConcept && (
           <p className="mt-4 flex items-start gap-3 rounded-2xl border border-dashed border-plum/30 bg-white p-5 text-plum">
             <Info aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-coral-ink" />
@@ -239,6 +260,14 @@ export default async function CaseStudyPage({ params }: Props) {
       {/* Project navigation and related work */}
       <Section labelledBy="more-title" className="pt-10 sm:pt-14">
         <Container>
+          <div className={cn("mb-10 flex flex-col items-start justify-between gap-6 rounded-[1.5rem] p-6 sm:flex-row sm:items-center sm:p-8", tone)}>
+            <div>
+              <p className="font-display text-sm font-semibold text-coral-ink">12 · Try it yourself</p>
+              <p className="mt-2 font-display text-2xl font-bold text-plum">{demoUrl ? `Explore the live ${project.name} website` : `The live ${project.name} website is on its way`}</p>
+              <p className="mt-1 text-charcoal/80">{demoUrl ? "Click through the real pages, forms and interactions described in this case study." : "This case study will link to a working demo as soon as it is published."}</p>
+            </div>
+            <LiveDemoLink demo={project.liveDemo} name={project.name} variant="button" className="shrink-0" />
+          </div>
           <nav aria-label="Case studies" className="grid gap-4 sm:grid-cols-2">
             <Link href={`/work/${prev.slug}`} className="group flex items-center gap-4 rounded-2xl border border-line bg-white p-5 transition-colors hover:border-plum/30">
               <ArrowLeft aria-hidden="true" className="size-5 shrink-0 text-coral-ink transition-transform group-hover:-translate-x-1" />

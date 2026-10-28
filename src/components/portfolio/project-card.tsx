@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import type { ProjectCardData } from "@/content/projects";
 import { projectToneSurface } from "@/lib/tones";
 import { cn } from "@/lib/utils";
+import { LiveDemoLink } from "./live-demo-link";
 import { BrowserFrame } from "./screen-frame";
 
 export function ConceptBadge({ className }: { className?: string }) {
@@ -53,7 +54,7 @@ export function ProjectCard({
           {project.kind === "concept" && <ConceptBadge />}
         </div>
         <H className={cn("mt-3 font-bold leading-tight", featured ? "text-3xl sm:text-4xl" : "text-2xl")}>
-          <Link href={`/work/${project.slug}`} className="rounded after:absolute after:inset-0 after:rounded-[1.5rem] after:content-[''] focus-visible:outline-none">
+          <Link href={`/work/${project.slug}`} data-card-link className="rounded after:absolute after:inset-0 after:rounded-[1.5rem] after:content-[''] focus-visible:outline-none">
             {project.title}
           </Link>
         </H>
@@ -65,13 +66,17 @@ export function ProjectCard({
             </li>
           ))}
         </ul>
-        <span aria-hidden="true" className="mt-auto inline-flex items-center gap-1.5 pt-5 font-semibold text-plum">
-          View case study
-          <ArrowRight className="size-4 text-coral-ink transition-transform duration-300 group-hover:translate-x-1" />
-        </span>
+        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-5">
+          <span aria-hidden="true" className="inline-flex items-center gap-1.5 font-semibold text-plum">
+            View case study
+            <ArrowRight className="size-4 text-coral-ink transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
+          {/* Sits above the stretched case-study link, so it stays separately clickable and focusable. */}
+          <LiveDemoLink demo={project.liveDemo} name={project.name} className="relative z-10" />
+        </div>
       </div>
-      {/* Focus ring for the stretched link, drawn around the whole card. */}
-      <span aria-hidden="true" className="pointer-events-none absolute -inset-2 rounded-[1.6rem] ring-coral-strong group-has-[:focus-visible]:ring-[3px]" />
+      {/* Focus ring for the stretched case-study link, drawn around the whole card. */}
+      <span aria-hidden="true" className="pointer-events-none absolute -inset-2 rounded-[1.6rem] ring-coral-strong group-has-[[data-card-link]:focus-visible]:ring-[3px]" />
     </article>
   );
 }

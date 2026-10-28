@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* The demo sites are separate apps with their own styles. */
+@source not "../../demos";
 
 /*
  * NS Digital Solutions design tokens.

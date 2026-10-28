@@ -44,3 +44,11 @@ Used only inside concept-project mockups. Source photo IDs:
 - `pro-meeting.jpg`: https://unsplash.com/photos/1600880292203-757bb62b4baf
 - `pro-office.jpg`: https://unsplash.com/photos/1556761175-b413da4baf72
 - `pro-skyline.jpg`: https://unsplash.com/photos/1486406146926-c627a92ad1ab
+
+Also used in the demo sites (demos/sites/*/public/photos):
+
+- `health-doctor.jpg`: https://unsplash.com/photos/1576091160399-112ba8d25d1d
+- `pro-paperwork.jpg`: https://unsplash.com/photos/1554224155-6726b3ff858f
+- `pro-office-empty.jpg`: https://unsplash.com/photos/1497366216548-37526070297c
+- `pro-team.jpg`: https://unsplash.com/photos/1521737604893-d14cc237f11d
+- `edu-books.jpg`: https://unsplash.com/photos/1503676260728-1c00da094a0b
