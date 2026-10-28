@@ -1,15 +1,14 @@
 import { CheckCircle2 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Eyebrow } from "@/components/ui/section";
-import { HeroVisual } from "./hero-visual";
+import { HeroVisual, type HeroScreens } from "./hero-visual";
 
 const trust = ["Development + QA expertise", "Performance-focused delivery", "Support for global businesses"];
 
-export function Hero() {
+export function Hero({ screens }: { screens?: HeroScreens }) {
   return (
     <section aria-labelledby="hero-title" className="relative -mt-20 overflow-hidden pb-20 pt-32 sm:pb-28 lg:pt-36">
-      <div aria-hidden="true" className="absolute -left-40 top-20 size-[30rem] rounded-full bg-lavender/70 blur-3xl" />
-      <div aria-hidden="true" className="absolute bottom-0 right-0 size-[26rem] rounded-full bg-mint/50 blur-3xl" />
+      <div aria-hidden="true" className="absolute -left-40 top-20 size-[30rem] rounded-full bg-lavender/50 blur-3xl" />
       <Container className="relative grid items-center gap-14 lg:grid-cols-[1.08fr_1fr] lg:gap-10">
         <div>
           <div className="animate-rise">
@@ -57,7 +56,7 @@ export function Hero() {
             ))}
           </ul>
         </div>
-        <HeroVisual />
+        {screens && <HeroVisual screens={screens} />}
       </Container>
     </section>
   );

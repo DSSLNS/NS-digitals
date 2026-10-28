@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useInView, useReducedMotion } from "motion/react";
 import * as m from "motion/react-m";
 import { Check, Code2, Layers, PenTool, Plug, RotateCcw, ShieldCheck } from "lucide-react";
@@ -15,6 +15,8 @@ const buildSteps = [
 const checks = ["Responsive layouts", "Functional flows", "Accessibility", "Regression coverage"];
 const buildLog = ["Design system and layouts agreed", "Responsive components built", "CMS, forms and APIs connected"];
 
+const noop = () => () => {};
+
 /** Sequence: 1–3 build steps, 4 hand-over line, 5–8 checks, 9 performance review, 10 validated. */
 const FINAL = 10;
 
@@ -24,8 +26,9 @@ export function DevQaStory() {
   const reduce = useReducedMotion();
   const [played, setPlayed] = useState(0);
   const [run, setRun] = useState(0);
-  // Reduced motion: show the finished state immediately.
-  const stage = reduce ? FINAL : played;
+  // Reduced motion: show the finished state, but only after hydration so server and client HTML match.
+  const hydrated = useSyncExternalStore(noop, () => true, () => false);
+  const stage = reduce && hydrated ? FINAL : played;
 
   useEffect(() => {
     if (!inView || reduce) return;

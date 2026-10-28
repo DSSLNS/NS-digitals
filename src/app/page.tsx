@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { showTestimonials, usingSamples, visibleTestimonials } from "@/content/testimonials";
-import { getIndustries, getPosts, getProjects, getServices } from "@/lib/content";
+import { getIndustries, getPosts, getProjectCards, getServices } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { DevQaStory } from "@/components/home/dev-qa-story";
 import { FeaturedWork } from "@/components/home/featured-work";
@@ -22,16 +22,22 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [services, industries, projects, posts] = await Promise.all([getServices(), getIndustries(), getProjects(), getPosts(3)]);
+  const [services, industries, projects, posts] = await Promise.all([getServices(), getIndustries(), getProjectCards(), getPosts(3)]);
+  const leadService = services[0];
+  const leadProject = leadService && projects.find((p) => p.primaryService === leadService.slug);
+  const furniture = projects.find((p) => p.slug === "oakhaven-furniture-concept");
+  const store = projects.find((p) => p.slug === "atelier-commerce-concept");
+  const heroScreens = furniture &&
+    store && { desktop: { slug: furniture.slug, view: furniture.cover.view, domain: furniture.domain }, phone: { slug: store.slug, view: "mobile-product" } };
   return (
     <>
-      <Hero />
+      <Hero screens={heroScreens} />
       <Trust />
-      <ServicesShowcase services={services} />
+      <ServicesShowcase services={services} preview={leadProject && { slug: leadProject.slug, view: leadProject.cover.view, domain: leadProject.domain }} />
       <DevQaStory />
       <Process />
       <Industries industries={industries} />
-      <FeaturedWork projects={projects} />
+      <FeaturedWork projects={projects.slice(0, 3)} total={projects.length} />
       <Why />
       {showTestimonials() && <Testimonials items={visibleTestimonials()} samples={usingSamples()} />}
       <Insights posts={posts} />

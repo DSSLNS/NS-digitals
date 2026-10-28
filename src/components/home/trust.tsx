@@ -1,7 +1,7 @@
 import { Code2, Handshake, ShieldCheck, Zap } from "lucide-react";
 import { Container, Eyebrow } from "@/components/ui/section";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
-import { cn } from "@/lib/utils";
+import { IconTile } from "@/components/visuals/icons";
 
 const capabilities = [
   { Icon: Code2, title: "Thoughtful development", body: "Clean, maintainable code shaped around your goals, not a template." },
@@ -28,23 +28,11 @@ export function Trust() {
           </Reveal>
         </div>
         <Stagger as="ul" className="mt-14 grid gap-px overflow-hidden rounded-[1.75rem] border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-          {capabilities.map(({ Icon, title, body }, i) => (
-            <StaggerItem as="li" key={title} className="group relative bg-ivory p-7 transition-colors duration-500 hover:bg-white">
-              <span className="grid size-12 place-items-center rounded-2xl bg-white text-plum ring-1 ring-plum/10 transition-[transform,background-color] duration-500 group-hover:-rotate-6 group-hover:bg-lavender">
-                <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
-              </span>
+          {capabilities.map(({ Icon, title, body }) => (
+            <StaggerItem as="li" key={title} className="relative bg-ivory p-7">
+              <IconTile icon={Icon} />
               <h3 className="mt-6 text-xl font-bold">{title}</h3>
               <p className="mt-2 leading-relaxed text-muted">{body}</p>
-              {/* Number-free progress indicator: segments fill on hover, staggered per card. */}
-              <div aria-hidden="true" className="mt-6 flex gap-1.5">
-                {[0, 1, 2, 3].map((s) => (
-                  <span
-                    key={s}
-                    className={cn("h-1.5 flex-1 rounded-full transition-colors duration-500 group-hover:bg-coral", s <= i ? "bg-coral/60" : "bg-plum/10")}
-                    style={{ transitionDelay: `${s * 80}ms` }}
-                  />
-                ))}
-              </div>
             </StaggerItem>
           ))}
         </Stagger>

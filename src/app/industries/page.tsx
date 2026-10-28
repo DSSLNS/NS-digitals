@@ -10,7 +10,7 @@ import { CtaBand } from "@/components/sections/cta-band";
 import { PageHero } from "@/components/sections/page-hero";
 import { ArrowLink } from "@/components/ui/button";
 import { Container, Section } from "@/components/ui/section";
-import { IndustryArt } from "@/components/visuals/industry-art";
+import { IconTile, industryIcons } from "@/components/visuals/icons";
 
 export const metadata: Metadata = buildMetadata({
   title: "Industries: Websites for E-commerce, SaaS, Startups & More",
@@ -35,7 +35,7 @@ export default async function IndustriesPage() {
             <Reveal key={ind.slug}>
               <article id={ind.slug} className={cn("group scroll-mt-28 rounded-[2rem] border border-plum/8 p-7 sm:p-10", toneSurface[ind.tone])}>
                 <div className="grid gap-8 lg:grid-cols-[auto_1.2fr_1fr] lg:items-start lg:gap-12">
-                  <IndustryArt art={ind.art} className="size-24" />
+                  <IconTile icon={industryIcons[ind.art]} size="lg" />
                   <div>
                     <h2 className="text-3xl font-bold">{ind.title}</h2>
                     <p className="mt-3 text-lg leading-relaxed text-charcoal/85">{ind.summary}</p>

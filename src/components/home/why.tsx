@@ -1,6 +1,8 @@
 import { Eye, Layers, MonitorSmartphone, Accessibility, LifeBuoy, Boxes } from "lucide-react";
+import { ButtonLink } from "@/components/ui/button";
 import { Container, Eyebrow } from "@/components/ui/section";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
+import { IconTile } from "@/components/visuals/icons";
 
 const points = [
   { Icon: Layers, title: "Development and testing under one roof", body: "Builders and QA engineers work side by side, so quality is planned in rather than inspected at the end." },
@@ -22,23 +24,20 @@ export function Why() {
               More than a website. <span className="block text-coral-strong">A dependable digital partner.</span>
             </h2>
           </Reveal>
-          {/* Abstract composition */}
-          <Reveal delay={0.15} className="mt-12 hidden lg:block">
-            <div aria-hidden="true" className="relative h-56">
-              <span className="absolute left-0 top-6 size-40 animate-float-slow rounded-full bg-coral" />
-              <span className="absolute left-28 top-0 size-32 animate-float rounded-[2rem] bg-lavender-deep mix-blend-multiply [animation-delay:-2s]" />
-              <span className="absolute left-56 top-20 size-24 rounded-full border-[10px] border-mint-deep" />
-              <span className="absolute left-44 top-40 h-4 w-40 rounded-full bg-sun" />
-            </div>
+          <Reveal delay={0.15} className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <ButtonLink href="/about" variant="outline">
+              How we work
+            </ButtonLink>
+            <ButtonLink href="/work" variant="plum">
+              See our case studies
+            </ButtonLink>
           </Reveal>
         </div>
         <Stagger as="ul" className="grid gap-4 sm:grid-cols-2">
           {points.map(({ Icon, title, body }, i) => (
             <StaggerItem as="li" key={title} className={i % 2 === 1 ? "sm:pt-10" : ""}>
-              <div className="group h-full rounded-[1.5rem] border border-line bg-white p-7 shadow-soft transition-[transform,box-shadow] duration-500 hover:-translate-y-1 hover:shadow-lift">
-                <span className="grid size-11 place-items-center rounded-xl bg-mint text-plum transition-transform duration-500 group-hover:rotate-[-8deg] group-hover:scale-110">
-                  <Icon aria-hidden="true" className="size-5" strokeWidth={1.75} />
-                </span>
+              <div className="h-full rounded-[1.5rem] border border-line bg-white p-7 shadow-soft">
+                <IconTile icon={Icon} className="bg-mint ring-0" />
                 <h3 className="mt-5 text-lg font-bold leading-snug">{title}</h3>
                 <p className="mt-2 leading-relaxed text-muted">{body}</p>
               </div>

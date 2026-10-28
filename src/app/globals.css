@@ -89,6 +89,12 @@
   .on-dark :focus-visible {
     outline-color: var(--color-sun);
   }
+  /* Portfolio mockups (internal capture route) use their own brand typography. */
+  [data-mockup] :where(h1, h2, h3, h4) {
+    color: inherit;
+    font-family: inherit;
+    letter-spacing: inherit;
+  }
   summary {
     cursor: pointer;
   }

@@ -21,7 +21,7 @@ export default function TermsPage() {
       <h2>Website content</h2>
       <p>
         The content on this website is provided for general information. We work to keep it accurate and current, but it is not professional advice for your specific
-        situation. Projects labelled &ldquo;Demonstration project&rdquo; are concepts created to illustrate our approach and are not client work.
+        situation. Projects labelled &ldquo;Concept project&rdquo; use fictional brands and briefs created to illustrate our approach and are not client work.
       </p>
       <h2>No guarantees of outcomes</h2>
       <p>

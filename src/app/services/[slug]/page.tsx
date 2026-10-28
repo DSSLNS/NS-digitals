@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Check, CircleAlert } from "lucide-react";
 import { getService, services, type ServiceSlug } from "@/content/services";
-import { projectsForService } from "@/content/projects";
+import { projectsForService, toProjectCard } from "@/content/projects";
 import { buildMetadata, serviceSchema } from "@/lib/seo";
 import { toneSurface } from "@/lib/tones";
 import { cn } from "@/lib/utils";
-import { ProjectCard, ServiceCard } from "@/components/cards";
+import { ServiceCard } from "@/components/cards";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/reveal";
 import { CtaBand } from "@/components/sections/cta-band";
 import { FaqList } from "@/components/sections/faq-list";
 import { PageHero } from "@/components/sections/page-hero";
 import { JsonLd } from "@/components/seo/json-ld";
-import { ButtonLink } from "@/components/ui/button";
+import { ArrowLink, ButtonLink } from "@/components/ui/button";
 import { Container, Section, SectionHeading } from "@/components/ui/section";
-import { ServiceArt } from "@/components/visuals/service-art";
+import { ProjectCard } from "@/components/portfolio/project-card";
+import { BrowserFrame } from "@/components/portfolio/screen-frame";
+import { ServiceIcon } from "@/components/visuals/icons";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -36,7 +38,8 @@ export default async function ServicePage({ params }: Props) {
 
   const path = `/services/${service.slug}`;
   const related = service.related.map((s) => getService(s)).filter((s) => s !== undefined);
-  const projects = projectsForService(service.slug as ServiceSlug);
+  const projects = projectsForService(service.slug as ServiceSlug).map(toProjectCard);
+  const showcase = projects[0];
 
   return (
     <>
@@ -60,11 +63,19 @@ export default async function ServicePage({ params }: Props) {
           </>
         }
         visual={
-          <div className={cn("group relative mx-auto max-w-md rounded-[2rem] border border-plum/10 p-10 shadow-lift", toneSurface[service.tone])}>
-            <div aria-hidden="true" className="absolute -right-4 -top-4 size-14 animate-float rounded-2xl bg-sun" />
-            <div aria-hidden="true" className="absolute -bottom-5 left-8 size-10 animate-float-slow rounded-full bg-coral" />
-            <ServiceArt slug={service.slug} className="transition-transform duration-700 group-hover:scale-105" />
-          </div>
+          showcase ? (
+            <figure className={cn("rounded-[2rem] p-4 sm:p-6", toneSurface[service.tone])}>
+              <BrowserFrame slug={showcase.slug} view={showcase.cover.view} domain={showcase.domain} alt={showcase.cover.alt} priority sizes="(min-width: 1024px) 34rem, 90vw" />
+              <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-2 px-1 text-sm">
+                <span className="text-charcoal/80">Concept case study: {showcase.name}</span>
+                <ArrowLink href={`/work/${showcase.slug}`} srContext={`: ${showcase.title}`}>
+                  View case study
+                </ArrowLink>
+              </figcaption>
+            </figure>
+          ) : (
+            <ServiceIcon slug={service.slug} size="lg" />
+          )
         }
       />
 
@@ -184,9 +195,18 @@ export default async function ServicePage({ params }: Props) {
           </Stagger>
           {projects.length > 0 && (
             <div className="mt-20">
-              <h3 className="text-2xl font-bold">Related demonstration projects</h3>
-              <p className="mt-2 max-w-2xl text-muted">Concept projects showing how we approach this kind of brief. They are not client work.</p>
-              <div className="mt-10 grid gap-12 md:grid-cols-2">
+              <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                <div>
+                  <h3 className="text-2xl font-bold">Related case studies</h3>
+                  <p className="mt-2 max-w-2xl text-muted">Concept projects showing how we approach this kind of brief. They use fictional brands and are not client work.</p>
+                </div>
+                {projects.length > 2 && (
+                  <ArrowLink href={`/work?service=${service.slug}`} className="shrink-0">
+                    View all {projects.length} {service.navLabel} case studies
+                  </ArrowLink>
+                )}
+              </div>
+              <div className="mt-10 grid gap-x-8 gap-y-14 md:grid-cols-2">
                 {projects.slice(0, 2).map((p) => (
                   <ProjectCard key={p.slug} project={p} />
                 ))}

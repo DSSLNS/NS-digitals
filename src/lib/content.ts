@@ -1,7 +1,7 @@
 import "server-only";
 import { industries } from "@/content/industries";
 import { posts, postText, type Post } from "@/content/posts";
-import { projects } from "@/content/projects";
+import { projects, toProjectCard } from "@/content/projects";
 import { services } from "@/content/services";
 import { readingTime } from "@/lib/utils";
 
@@ -25,6 +25,10 @@ export async function getIndustries() {
 
 export async function getProjects() {
   return projects;
+}
+
+export async function getProjectCards() {
+  return projects.map(toProjectCard);
 }
 
 export type PostSummary = Omit<Post, "body"> & { readingMinutes: number };
